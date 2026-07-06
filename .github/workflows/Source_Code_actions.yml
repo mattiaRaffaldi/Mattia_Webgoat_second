@@ -1,0 +1,40 @@
+name: "Appscan_SASTSCA"
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+env:
+  # Datacenter ASoC. EU: eu.cloud.appscan.com
+  SERVICE_URL: "cloud.appscan.com"
+  # Nome scan univoco per run: serve per ritrovare gli scan id dopo l'action
+  SCAN_NAME: "WebGoat-${{ github.run_id }}"
+
+jobs:
+  scan:
+    name: AppScan SAST+SCA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------
+      # 1) LANCIO via action ufficiale: esegue SAST + SCA insieme.
+      #    Invocazione allineata al main.yml funzionante:
+      #    - versione v1.0.9 (ultima rilasciata e funzionante; la v1.0.8 usciva a vuoto)
+      #    - niente scan_build_outputs: si scansiona il sorgente
+      #    - wait_for_analysis: aspetta che l'analisi finisca
+      #    Il security gate (fail_for_noncompliance) e' OFF per default.
+      # ------------------------------------------------------------------
+      - name: AppScan scan (SAST + SCA)
+        uses: HCL-TECH-SOFTWARE/appscan-sast-action@v1.0.9
+        with:
+          asoc_key: ${{ secrets.ASOC_KEY }}
+          asoc_secret: ${{ secrets.ASOC_SECRET }}
+          application_id: ${{ vars.ASOC_APP_ID }}
+          wait_for_analysis: true
+          scan_name: ${{ env.SCAN_NAME }}
