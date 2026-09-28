@@ -1,0 +1,46 @@
+name: "Appscan_SASTSCA"
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+env:
+  # PR  -> incremental scan (only changed files) + security gate
+  # main / manual -> full scan, no gate
+  IS_PR: ${{ github.event_name == 'pull_request' }}
+  SCAN_NAME: ${{ github.event_name == 'pull_request' && format('WebGoat-PR{0}-{1}', github.event.number, github.run_id) || format('WebGoat-{0}-{1}', github.ref_name, github.run_id) }}
+
+jobs:
+  scan:
+    name: AppScan SAST+SCA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: AppScan scan (SAST + SCA)
+        uses: HCL-TECH-SOFTWARE/appscan-sast-action@v1.1.3
+        with:
+          asoc_key: ${{ secrets.ASOC_KEY }}
+          asoc_secret: ${{ secrets.ASOC_SECRET }}
+          application_id: ${{ vars.ASOC_APP_ID }}
+          scan_name: ${{ env.SCAN_NAME }}
+          # PR scan summary as a comment on the pull request
+          github_token: ${{ github.token }}
+          # Only files added/modified in the PR
+          incremental_scan: ${{ env.IS_PR }}
+          # Wait for results (required for the gate)
+          wait_for_analysis: true
+          analysis_timeout_minutes: 60
+          # Security gate: active on PRs only
+          fail_for_noncompliance: ${{ env.IS_PR }}
+          failure_threshold: High
