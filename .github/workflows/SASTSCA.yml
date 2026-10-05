@@ -12,7 +12,7 @@ name: "AppScan SAST + SCA"
 
 on:
   push:
-    branches: [release-2023.8]
+    branches: [release-2023.8-src]
   workflow_dispatch:
 
 permissions:
