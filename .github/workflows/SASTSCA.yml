@@ -8,7 +8,7 @@ name: "AppScan SAST + SCA"
 #
 # Prerequisiti:
 #   secrets:   ASOC_KEY, ASOC_SECRET
-#   variables: ASOC_APPID   (la stessa applicazione dove arrivano IAST e DAST)
+#   variables: ASOC_APPID   (la stessa applicazione dove arrivano IAST e DAST) aggiornato
 
 on:
   push:
