@@ -35,7 +35,7 @@ jobs:
         with:
           asoc_key: ${{ secrets.ASOC_KEY_MATTIADEMOCENTER}}
           asoc_secret: ${{ secrets.ASOC_SECRET_MATTIADEMOCENTER }}
-          application_id: ${{ vars.ASOC_APPID_MATTIADEMOCENTE }}
+          application_id: ${{ vars.ASOC_APPID_MATTIADEMOCENTER }}
 
           scan_name: "SAST+SCA WebGoat 2023.8 ${{ github.sha }} run${{ github.run_id }}"
 
