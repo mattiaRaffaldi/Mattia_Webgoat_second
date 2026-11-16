@@ -11,8 +11,8 @@ name: "AppScan SAST + SCA"
 #   variables: ASOC_APPID   (la stessa applicazione dove arrivano IAST e DAST) aggiornato
 
 on:
-  push:
-    branches: [release-2023.8-src]
+ # push:
+  #  branches: [release-2023.8-src]
   workflow_dispatch:
 
 permissions:
