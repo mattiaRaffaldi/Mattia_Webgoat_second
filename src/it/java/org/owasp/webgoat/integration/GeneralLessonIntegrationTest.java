@@ -141,10 +141,24 @@ public class GeneralLessonIntegrationTest extends IntegrationTest {
         startLesson("InsecureLogin");
         Map<String, Object> params = new HashMap<>();
         params.clear();
-        params.put("username", "CaptainJack");
-        params.put("password", "BlackPearl");
+        params.put("username", requiredCredential("WEBGOAT_INSECURELOGIN_USERNAME"));
+        params.put("password", requiredCredential("WEBGOAT_INSECURELOGIN_PASSWORD"));
         checkAssignment(webGoatUrlConfig.url("InsecureLogin/task"), params, true);
         checkResults("InsecureLogin");
+    }
+
+    private static String requiredCredential(String settingName) {
+        String value = System.getProperty(settingName);
+        if (!StringUtils.hasText(value)) {
+            value = System.getenv(settingName);
+        }
+        if (!StringUtils.hasText(value)) {
+            throw new IllegalStateException(
+                    "Missing required InsecureLogin credential: set system property or environment variable '"
+                            + settingName
+                            + "'.");
+        }
+        return value;
     }
 
     @Test
